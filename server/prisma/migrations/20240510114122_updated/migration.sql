@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Item" ADD COLUMN     "tax" DOUBLE PRECISION NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "PurchaseSection" ADD COLUMN     "fileNo" TEXT NOT NULL DEFAULT '';

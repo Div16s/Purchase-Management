@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Form" ADD COLUMN     "formCategory" TEXT NOT NULL DEFAULT 'SP101',
+ADD COLUMN     "name" TEXT NOT NULL DEFAULT '';

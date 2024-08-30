@@ -1,0 +1,187 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Role enum defining different user roles
+enum Role {
+  FACULTY
+  HOD
+  JAO
+  ACCOUNTANT
+  AO
+  AR
+  JR
+  DR
+  JS
+  REGISTRAR
+}
+
+enum Department {
+  NONE
+  CSE
+  EE
+  MNC
+  ME
+  CH
+  CE
+  BME
+  PH
+  ACC
+  PUR
+  ADMIN
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ApprovedBy {
+  NONE
+  INITIAL_HOD
+  FINAL_HOD
+  JAO
+  ACCOUNTANT
+  AO
+  AR
+  JR
+  DR
+  JS
+  ACCOUNTS
+  PURCHASE
+  REGISTRAR
+}
+
+enum RejectedBy {
+  NONE
+  HOD
+  JAO
+  ACCOUNTANT
+  AO
+  AR
+  JR
+  DR
+  JS
+  ACCOUNTS
+  PURCHASE
+  REGISTRAR
+}
+
+// User model representing all types of users
+model User {
+  id         Int        @id @default(autoincrement())
+  name       String
+  email      String     @unique
+  role       Role       @default(FACULTY)
+  department Department @default(NONE)
+  signature  String     @default("")
+  forms      Form[]
+  created_at DateTime   @default(now())
+}
+
+// OTP Model
+model UserOTP {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  otp             String
+  otpCreationTime DateTime @default(now())
+}
+
+//forms Model
+model Form {
+  id                        Int        @id @default(autoincrement())
+  name                      String     @default("")
+  department                Department @default(NONE)
+  formCategory              String     @default("SP101")
+  sendTo                    String     @default("")
+  status                    Status     @default(PENDING)
+  approvedBy                ApprovedBy @default(NONE)
+  rejectedBy                RejectedBy @default(NONE)
+  remarks                   String     @default("")
+  budgetHead                String
+  sanctionedBudget          String
+  approxCost                String
+  items                     Item[]
+  category                  String
+  budgetaryApprovalEnclosed String
+  readyForInstallation      String
+  goodForResearchPurpose    String
+  GEM                       String
+  GEM_PDF                   String    @default("")
+  modeOfEnquiry             String
+  nameOfSupplier            String
+  numberOfQuotation         String
+  quotationNumber           String
+  date                      String     @default("")
+  modeOfPayment             String
+  deliveryPeriod            String
+
+  budgetSection   BudgetSection?
+  purchaseSection PurchaseSection?
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @default(now()) @updatedAt()
+  userId          Int
+  user            User             @relation(fields: [userId], references: [id])
+  signatures      Signature[]
+}
+
+model Signature {
+  id         Int        @id @default(autoincrement())
+  department Department @default(NONE)
+  role       Role       @default(FACULTY)
+  signature  String     @default("")
+
+  // Foreign key referencing Form
+  formId Int
+  form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+}
+
+//Item model
+model Item {
+  id              Int    @id @default(autoincrement())
+  itemDescription String
+  quantity        Int
+  price           Float
+  tax             Float  @default(0)
+
+  // Foreign key referencing Form
+  formId Int
+  form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+}
+
+//BudgetSection Model
+model BudgetSection {
+  id              Int    @id @default(autoincrement())
+  role            Role   @default(JAO)
+  budgetAvailable String @default("")
+  budgetBooked    String @default("")
+  balanceBudget   String @default("")
+
+  // Foreign key referencing Form
+  formId Int  @unique
+  form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+}
+
+//PurchaseSection Model
+model PurchaseSection {
+  id          Int    @id @default(autoincrement())
+  role        Role   @default(JS)
+  startPageNo String @default("")
+  endPageNo   String @default("")
+  rsInValue   String @default("")
+  rsInWords   String @default("")
+  fileNo      String @default("")
+
+  // Foreign key referencing Form
+  formId Int  @unique
+  form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+}

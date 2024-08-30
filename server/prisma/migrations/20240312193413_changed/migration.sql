@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Form" ALTER COLUMN "sanctionedBudget" SET DATA TYPE TEXT,
+ALTER COLUMN "approxCost" SET DATA TYPE TEXT,
+ALTER COLUMN "numberOfQuotation" SET DATA TYPE TEXT;

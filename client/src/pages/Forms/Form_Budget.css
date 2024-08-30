@@ -1,0 +1,11 @@
+
+.control-label-1 {
+    display: inline-block;
+    margin: 0 0 8px;
+    font-weight: 400;
+    font-size: 14px;
+  
+    border: none;
+    word-wrap: break-word;
+    color: #333333;
+  }
